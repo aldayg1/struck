@@ -187,7 +187,7 @@ def _compact_row(w: QPushButton) -> QHBoxLayout:
 
 def network_badge(net: NetworkProfile) -> QLabel:
     """The selected network, on the title bar and every approval screen: named
-    plainly, no danger styling (operator decree 2026-10-22)."""
+    plainly, no danger styling ."""
     return QLabel(f"NETWORK: {net.label}")
 
 
@@ -273,7 +273,7 @@ def _level_desc(a: tuple[str, str], b: tuple[str, str]) -> int:
     return _price_cmp(b[0], a[0])
 
 
-DEPTH_LEVELS = 20  # the depth stream covers the top 20 per side (strike-orderbook)
+DEPTH_LEVELS = 20 # the depth stream covers the top 20 per side (strike-orderbook)
 TRADE_ROWS = 50
 
 
@@ -311,9 +311,9 @@ class MarketPanel(QWidget):
         super().__init__()
         self.propose_plan = propose_plan
         self._symbols: list[str] = []
-        self._markets: dict[str, Market] = {}  # the served /v2/markets rows
+        self._markets: dict[str, Market] = {} # the served /v2/markets rows
         self._rows: list[tuple[str, ...]] = []
-        self.symbol = QComboBox()  # filled ONLY from the served /v2/markets
+        self.symbol = QComboBox() # filled ONLY from the served /v2/markets
         self.symbol.setPlaceholderText("Symbol")
         self.interval = QComboBox()
         self.interval.addItems(self.INTERVALS)
@@ -358,7 +358,7 @@ class MarketPanel(QWidget):
         chart_row = LAYOUT.hbox()
         chart_row.addWidget(self.chart, 5)
         self.ticket = ChartTicket(self)
-        self.ticket.setVisible(False)  # "Show order panel" opens it beside the chart
+        self.ticket.setVisible(False) # "Show order panel" opens it beside the chart
         chart_row.addWidget(self.ticket, 1)
         self.chart_only = _button("Show order panel", "default")
         self.chart_only.clicked.connect(self._toggle_ticket)
@@ -383,7 +383,7 @@ class MarketPanel(QWidget):
         markets_box.setLayout(markets_box_inner)
         tables.insertWidget(0, markets_box, 1)
         layout.addLayout(tables, 2)
-        self.preferred_symbol = ""  # optional pick at start; must be served by /v2/markets
+        self.preferred_symbol = "" # optional pick at start; must be served by /v2/markets
         self._sub_symbol = ""
         self._sub_interval = ""
         self._sub_price_type: PriceType = "mark"
@@ -405,7 +405,7 @@ class MarketPanel(QWidget):
         self._workers: list[Worker] = []
         self.stream = self._new_stream()
         self._resync_timer = QTimer(self)
-        self._resync_timer.setInterval(60_000)  # strike-orderbook step 6: periodic re-sync
+        self._resync_timer.setInterval(60_000) # strike-orderbook step 6: periodic re-sync
         self._resync_timer.timeout.connect(lambda: self.resync() if self._synced else None)
         self.symbol.currentTextChanged.connect(self._changed)
         self.interval.currentTextChanged.connect(self._changed)
@@ -436,7 +436,7 @@ class MarketPanel(QWidget):
         self.badge.setText(ui_log("market", f"[{text}]"))
 
     def _failed(self, text: str) -> None:
-        self.set_badge(f"FAILED: {text}")  # the badge is not overwritten by live mark updates
+        self.set_badge(f"FAILED: {text}") # the badge is not overwritten by live mark updates
 
     def _run(self, fn: Callable[[], str], done: Callable[[str], None]) -> None:
         worker = Worker(fn)
@@ -546,7 +546,7 @@ class MarketPanel(QWidget):
         self.status.setText(text)
 
     def _toggle_ticket(self) -> None:
-        """The chart NEVER leaves the screen (operator decree: like
+        """The chart NEVER leaves the screen (like
         TradingView/Binance, the order panel opens BESIDE the chart; the
         ticket toggles its own side column only)."""
         showing = self.ticket.isVisible()
@@ -637,7 +637,7 @@ class MarketPanel(QWidget):
             self._reset_depth_state()
             self.trades_model.removeRows(
                 0, self.trades_model.rowCount()
-            )  # another symbol's trades do not belong here
+            ) # another symbol's trades do not belong here
         for sym, ch in sorted(old - new):
             self.stream.send(self._sub("unsubscribe", ch, sym))
         self._sub_symbol, self._sub_interval = symbol, interval
@@ -665,7 +665,7 @@ class MarketPanel(QWidget):
         klines = self._client_call(lambda c: c.klines(symbol, interval, 90, price_type).value)
         trades = self._client_call(lambda c: c.trades(symbol, TRADE_ROWS).value)
         self._history[generation] = (klines, trades)
-        return f"{symbol}  {interval}  ·  {len(klines.root)} candles"
+        return f"{symbol} {interval} · {len(klines.root)} candles"
 
     def _retitle(self) -> None:
         symbol = self._sub_symbol if self._sub_symbol else "Market"
@@ -688,7 +688,7 @@ class MarketPanel(QWidget):
             f"{datetime.fromtimestamp(self._candles[-1][0] / 1000, UTC):%Y-%m-%d %H:%M UTC}"
         )
         if self._seed_trades is not None and self.trades_model.rowCount() == 0:
-            for t in self._seed_trades.root:  # served newest first
+            for t in self._seed_trades.root: # served newest first
                 self.trades_model.appendRow(
                     [
                         QStandardItem(v)
@@ -724,15 +724,15 @@ class MarketPanel(QWidget):
                 return
             self._mark = marked.p
             self.status.setText(
-                f"{marked.s}   mark {marked.p}   index {marked.i}   "
-                f"funding {marked.r}   next {_clock(marked.T)}"
+                f"{marked.s} mark {marked.p} index {marked.i} "
+                f"funding {marked.r} next {_clock(marked.T)}"
             )
             self._retitle()
             if len(self._candles) >= 2:
                 self.chart.set_price_lines([("mark", marked.p, "gold")])
             return
         if msg.get("s") != self._sub_symbol:
-            return  # late message for a stream we already unsubscribed
+            return # late message for a stream we already unsubscribed
         if e == "depthUpdate":
             self.on_depth(DepthUpdate.model_validate(msg))
         elif e == "trade":
@@ -767,7 +767,7 @@ class MarketPanel(QWidget):
     def on_depth(self, ev: DepthUpdate) -> None:
         if self._awaiting_first:
             self._awaiting_first = False
-            self.resync(keep=ev)  # may be a full top-20 push without removals
+            self.resync(keep=ev) # may be a full top-20 push without removals
             return
         if not self._synced:
             self._buffer.append(ev)
@@ -794,7 +794,7 @@ class MarketPanel(QWidget):
 
     def seed(self, gen: int, snap: Depth) -> None:
         if gen != self._gen:
-            return  # a newer resync superseded this one
+            return # a newer resync superseded this one
         self._bids = {p: q for p, q in snap.bids}
         self._asks = {p: q for p, q in snap.asks}
         self._last_u = snap.lastUpdateId
@@ -836,7 +836,7 @@ class MarketPanel(QWidget):
             for c, v in enumerate((bq, bp, ap, aq)):
                 item = cast(
                     "QStandardItem | None", self.depth_model.item(r, c)
-                )  # None at runtime for an empty cell
+                ) # None at runtime for an empty cell
                 if item is None:
                     self.depth_model.setItem(r, c, QStandardItem(v))
                 elif item.text() != v:
@@ -863,7 +863,7 @@ class BotsPanel(QWidget):
         self.table = QTableWidget(0, len(self.COLUMNS))
         self.table.setHorizontalHeaderLabels(self.COLUMNS)
         self.table.setAlternatingRowColors(True)
-        from .builders import TriggerBuilder  # builders reuse this module's widgets
+        from .builders import TriggerBuilder # builders reuse this module's widgets
 
         self.builder = TriggerBuilder(self.add_spec)
         self.log = _mono()
@@ -1097,7 +1097,7 @@ class ApprovalPanel(QWidget):
         rv.addWidget(self.checks, 2)
         self.plan_tabs.addTab(review, "Plan legs + checks")
         self.plan_tabs.addTab(self.ticket, "Order ticket")
-        from .builders import OnchainSendBuilder  # builders reuse this module's widgets
+        from .builders import OnchainSendBuilder # builders reuse this module's widgets
 
         self.onchain = OnchainSendBuilder()
         self.plan_tabs.addTab(self.onchain, "On-chain send")
@@ -1122,7 +1122,7 @@ class ApprovalPanel(QWidget):
         self._show_key_state()
         self._http: RecordedHttp | None = None
         self._graph: _Graph | None = None
-        self._shown_hash: str | None = None  # the plan_hash the human SEES
+        self._shown_hash: str | None = None # the plan_hash the human SEES
         self._config: _ThreadConfig = {"configurable": {"thread_id": "ui"}}
         self._worker: Worker | None = None
 
@@ -1250,7 +1250,7 @@ class ApprovalPanel(QWidget):
             return
         plan = plan_of(state)
         fill_table(self.plan_view, strike_leg_rows(plan.legs))
-        self.hash_label.setText(f"plan_hash {plan.plan_hash}  — awaiting YOUR approval")
+        self.hash_label.setText(f"plan_hash {plan.plan_hash} — awaiting YOUR approval")
         self._shown_hash = plan.plan_hash
         self.wait.setText(
             "WAITING FOR YOU. Press Approve on this tab. Nothing is built, and there is no signature yet. "
@@ -1451,7 +1451,7 @@ class SettingsPanel(QWidget):
     keep the network they were built for); a --network flag overrides it."""
 
     PROVIDERS: tuple[str, ...] = tuple(PROVIDERS)
-    saved = Signal()  # the Chat dock re-reads its provider
+    saved = Signal() # the Chat dock re-reads its provider
 
     # Endpoint examples (display only — the model rejects wrong shapes loudly).
     _ENDPOINT_EXAMPLES = {
@@ -1510,7 +1510,7 @@ class SettingsPanel(QWidget):
         cv.addWidget(self.chain_state)
         nv.addWidget(chain_box)
         self._load_chain_config()
-        self.llm_path = llm_path  # per-user <user config dir>/llm.json, never the tracked config
+        self.llm_path = llm_path # per-user <user config dir>/llm.json, never the tracked config
         self.provider = QComboBox()
         self.provider.addItems(self.PROVIDERS)
         # The model id is SERVED by the provider (its own model-list endpoint):
@@ -1648,19 +1648,19 @@ class SettingsPanel(QWidget):
         outer = LAYOUT.vbox()
         self.setLayout(outer)
         outer.addWidget(LAYOUT.scroll(content))
-        self._show_key(self.provider.currentText())  # first paint follows the initial provider
+        self._show_key(self.provider.currentText()) # first paint follows the initial provider
         self.show_state()
 
     def _reset_audit_job(self) -> str:
         report = reset_audit(load_config())
         hard = reset_report_text(report)
-        return ("CLEAR\n" if report.clear else "HOLDS\n") + hard  # first line is the gate
+        return ("CLEAR\n" if report.clear else "HOLDS\n") + hard # first line is the gate
 
     def _reset_audit_failed(self, text: str) -> None:
         self.reset_sheet.setText(ui_log("settings", f"[AUDIT FAILED: {text}]"))
 
     def _reset_audit(self) -> None:
-        self._reset_worker = Worker(self._reset_audit_job)  # kept alive: no GC mid-thread
+        self._reset_worker = Worker(self._reset_audit_job) # kept alive: no GC mid-thread
         self._reset_worker.done.connect(self._reset_sheet)
         self._reset_worker.failed.connect(self._reset_audit_failed)
         self._reset_worker.start()
@@ -1705,10 +1705,10 @@ class SettingsPanel(QWidget):
                     "shows what the guard checks (and any assets it found)]",
                 )
             )
-            self._reset_audit()  # speak: show the sheet right now, refuse later anyway
+            self._reset_audit() # speak: show the sheet right now, refuse later anyway
             return
-        self.reset_token.clear()  # disarm immediately: one token per reset
-        self._reset_worker = Worker(self._reset_job)  # kept alive: no GC mid-thread
+        self.reset_token.clear() # disarm immediately: one token per reset
+        self._reset_worker = Worker(self._reset_job) # kept alive: no GC mid-thread
         self._reset_worker.done.connect(self._reset_started)
         self._reset_worker.failed.connect(self._reset_failed)
         self._reset_worker.start()
@@ -1740,7 +1740,7 @@ class SettingsPanel(QWidget):
             self.base_url.setPlaceholderText(
                 "endpoint URL — the provider's official host is used; custom host needs allow_custom_host"
             )
-        else:  # keyless endpoint provider: the URL is the whole configuration
+        else: # keyless endpoint provider: the URL is the whole configuration
             self.base_url.setPlaceholderText(
                 f"endpoint URL — {provider} is keyless: the endpoint IS the configuration"
                 + self._ENDPOINT_EXAMPLES.get(provider, "")
@@ -1765,7 +1765,7 @@ class SettingsPanel(QWidget):
             return
         self.secret_state.setText(ui_log("settings", f"[STORE UNLOCKED: {_secrets.SECRETS_PATH}]"))
         self.show_state()
-        self.saved.emit()  # the Chat dock re-reads its provider (keys now readable)
+        self.saved.emit() # the Chat dock re-reads its provider (keys now readable)
         self._ask_strike_key()
 
     def _ask_strike_key(self) -> None:
@@ -1816,7 +1816,7 @@ class SettingsPanel(QWidget):
             self.model_pick.addItem(llm.model)
             self.base_url.setText(llm.base_url or "")
             self.allow_custom_host.setChecked(llm.allow_custom_host)
-            chat_model(llm)  # builds the stock client only; no request is sent
+            chat_model(llm) # builds the stock client only; no request is sent
             self.state.setText(
                 ui_log(
                     "settings",
@@ -1844,7 +1844,7 @@ class SettingsPanel(QWidget):
         except (ConfigError, ValueError, OSError) as exc:
             self.chain_state.setText(ui_log("settings", f"[CHAIN CONFIG UNLOADED: {exc}]"))
 
-    def save_chain_config(self) -> None:  # noqa: C901
+    def save_chain_config(self) -> None: # noqa: C901
         """Human click only. Merges the edited fields into config/struck.json,
         validates the WHOLE file through the strict model BEFORE writing (the
         node socket must be an absolute local path; every socket slot named),
@@ -1870,7 +1870,7 @@ class SettingsPanel(QWidget):
         if self.cli_path.text().strip():
             raw["cardano_cli_path"] = self.cli_path.text().strip()
         try:
-            StruckConfig.model_validate(raw)  # whole-file schema check, nothing mutated yet
+            StruckConfig.model_validate(raw) # whole-file schema check, nothing mutated yet
         except ValidationError as exc:
             errors: list[dict[str, object]] = cast("list[dict[str, object]]", exc.errors())
             first = errors[0] if errors else {"msg": "?", "loc": ()}
@@ -1957,7 +1957,7 @@ class SettingsPanel(QWidget):
                 base_url=self.base_url.text().strip() or None,
                 allow_custom_host=self.allow_custom_host.isChecked(),
             )
-            save_llm_config(llm, self.llm_path)  # 0600, atomic
+            save_llm_config(llm, self.llm_path) # 0600, atomic
         except (ValueError, OSError) as exc:
             self.state.setText(ui_log("settings", f"[NOT SAVED: {exc}]"))
             return
@@ -2011,7 +2011,7 @@ class AccountPanel(QWidget):
     spec's REST resync (``/v2/account``, ``/v2/positions``) after every
     (re)subscribe. Values are placed as served; rows update in place."""
 
-    order_update = Signal(object)  # OrderTradeUpdate, for N9s in the Approval tab
+    order_update = Signal(object) # OrderTradeUpdate, for N9s in the Approval tab
 
     def __init__(self) -> None:
         super().__init__()
@@ -2083,7 +2083,7 @@ class AccountPanel(QWidget):
         self._positions_only = False
         self._position_seq: dict[str, int] = {}
         self._stream_updates: deque[AccountUpdate] = deque(maxlen=64)
-        self._offset_ms: int | None = None  # Strike served clock - local clock
+        self._offset_ms: int | None = None # Strike served clock - local clock
         self._clock_worker: Worker | None = None
         self.set_badge(f"KEY NOT SET: {self._reason}" if self._wallet is None else "NOT CONNECTED")
 
@@ -2209,7 +2209,7 @@ class AccountPanel(QWidget):
             "filled z": d.z,
             "close reason": d.cr,
         }
-        if d.t > 0:  # a fill exactly when t > 0 (userstream :145)
+        if d.t > 0: # a fill exactly when t > 0 (userstream :145)
             values |= {
                 "last fill l": d.l,
                 "last price L": d.L,
@@ -2229,7 +2229,7 @@ class AccountPanel(QWidget):
             self.account.upsert("account", {"wallet_balance": u.data.B[0].wb})
         for p in u.data.P:
             if p.position_seq < self._position_seq.get(p.position_id, -1):
-                continue  # older than what we hold for this position_id (userstream :196)
+                continue # older than what we hold for this position_id (userstream :196)
             self._position_seq[p.position_id] = p.position_seq
             if p.pa == "0":
                 self.positions.remove(p.s)
@@ -2308,7 +2308,7 @@ class AccountPanel(QWidget):
         served = {p.symbol for p in pos.positions}
         for key in self.positions.keys():
             if key not in served:
-                self.positions.remove(key)  # closed per the served snapshot
+                self.positions.remove(key) # closed per the served snapshot
         for p in pos.positions:
             self.positions.upsert(
                 p.symbol,
@@ -2357,7 +2357,7 @@ class ChartTicket(QGroupBox):
         self.activation.setPlaceholderText("activation_price (trailing)")
         self.tif = QComboBox()
         self.tif.addItems(("", "GTC", "IOC", "FOK"))
-        self.leverage = QComboBox()  # ONLY the served range (refresh())
+        self.leverage = QComboBox() # ONLY the served range (refresh())
         self.margin = QComboBox()
         self.margin.addItems(("", "cross", "isolated"))
         self.margin.setToolTip(
@@ -2477,7 +2477,7 @@ class ChartTicket(QGroupBox):
                     "price": None,
                 }
         if leg["tp"] or leg["sl"]:
-            leg["kind"] = "bracket"  # POST /v2/order/strategy (strike-trading)
+            leg["kind"] = "bracket" # POST /v2/order/strategy (strike-trading)
         legs: list[dict[str, object]] = [leg]
         if self.margin.currentText():
             # margin_mode leg FIRST (POST /v2/marginMode), order leg second;

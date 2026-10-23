@@ -52,7 +52,7 @@ from .network import (
 )
 from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr, field_validator
 
-REPO_ROOT = paths.REPO_ROOT  # package-relative, never the cwd
+REPO_ROOT = paths.REPO_ROOT # package-relative, never the cwd
 CONFIG_PATH = REPO_ROOT / "config" / "struck.json"
 CALL_HISTORY_PATH = REPO_ROOT / "logs" / "call_history.jsonl"
 RECEIPTS_DIR = REPO_ROOT / "receipts"
@@ -78,7 +78,7 @@ def _check_host(url: str, host: str) -> None:
         raise ValueError(f"{url!r}: internationalized (IDN/punycode) host {host!r} is not allowed")
     try:
         ipaddress.ip_address(host)
-        return  # a canonical IPv4/IPv6 literal
+        return # a canonical IPv4/IPv6 literal
     except ValueError:
         pass
     last = host.rsplit(".", 1)[-1]
@@ -149,7 +149,7 @@ class LlmConfig(BaseModel):
 
     provider: LlmProvider
     model: StrictStr
-    base_url: StrictStr | None  # required for vllm / ollama / azure_openai; no default
+    base_url: StrictStr | None # required for vllm / ollama / azure_openai; no default
     # A hosted provider at a NON-official host needs this explicit opt-in, and then
     # is reachable only over https.
     allow_custom_host: StrictBool = False
@@ -171,7 +171,7 @@ class StruckConfig(BaseModel):
 
     network: NetworkName
     chain_backend: Literal["node", "koios"]
-    node_socket: dict[NetworkName, StrictStr | None]  # EVERY network name; null = no node
+    node_socket: dict[NetworkName, StrictStr | None] # EVERY network name; null = no node
     cardano_cli_path: StrictStr
     kupo_url: StrictStr
     ogmios_url: StrictStr
@@ -180,7 +180,7 @@ class StruckConfig(BaseModel):
     @field_validator("network")
     @classmethod
     def _network(cls, v: str) -> str:
-        return profile(v).name  # a row of struck.network.PROFILES, else loud
+        return profile(v).name # a row of struck.network.PROFILES, else loud
 
     @field_validator("node_socket")
     @classmethod
@@ -247,7 +247,7 @@ class StruckConfig(BaseModel):
         return self.profile.cardano_magic
 
 
-_SELECTED: list[NetworkName] = []  # pinned once per process (--network, or first resolution)
+_SELECTED: list[NetworkName] = [] # pinned once per process (--network, or first resolution)
 
 
 def select_network(name: str) -> NetworkName:
@@ -296,7 +296,7 @@ def load_config(path: Path = CONFIG_PATH) -> StruckConfig:
             f"default): a JSON object with {', '.join(CONFIG_KEYS)}. Nothing was run."
         ) from exc
     try:
-        not_group_writable(path)  # the file selects the network and the binaries
+        not_group_writable(path) # the file selects the network and the binaries
         not_group_writable(path.parent)
     except ValueError as exc:
         raise ConfigError(f"{exc}. Nothing was run.") from exc
@@ -348,7 +348,7 @@ def pop_network_flag(argv: list[str], *, check_config: bool = True) -> list[str]
             rest.append(arg)
     if check_config:
         try:
-            load_config()  # every entry point fails closed on a missing/invalid local config
+            load_config() # every entry point fails closed on a missing/invalid local config
         except (ValueError, OSError) as exc:
             raise SystemExit(f"STRUCK CONFIG REFUSED: {exc}") from exc
     return rest
@@ -356,14 +356,14 @@ def pop_network_flag(argv: list[str], *, check_config: bool = True) -> list[str]
 
 def network_banner(cfg: StruckConfig) -> str:
     """The line every approval prompt prints first: the selected network, named
-    plainly (no editorializing — operator decree 2026-10-22)."""
+    plainly (no editorializing — ."""
     return f"NETWORK: {cfg.profile.label}"
 
 
 def network_help() -> str:
     """The ``--network`` line every CLI usage/help prints (names from the table)."""
     return (
-        f"  --network <name>   one of: {', '.join(NETWORKS)} (rows of struck.network.PROFILES); "
+        f" --network <name> one of: {', '.join(NETWORKS)} (rows of struck.network.PROFILES); "
         f"default: the Settings choice ({NETWORK_SETTING_PATH}), else config/struck.json"
     )
 

@@ -30,8 +30,8 @@ NetworkName = str
 
 class NetworkProfile(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid", frozen=True)
-    name: StrictStr  # what --network / Settings select
-    label: StrictStr  # title bar + every approval screen
+    name: StrictStr # what --network / Settings select
+    label: StrictStr # title bar + every approval screen
     strike_label: StrictStr
     cardano_label: StrictStr
     strike_venue: StrictStr
@@ -41,12 +41,12 @@ class NetworkProfile(BaseModel):
     cardano_magic: StrictInt
     ogmios_genesis_network: StrictStr
     koios_url: StrictStr
-    network_id: StrictInt  # tx body network_id == address header network (CIP-19)
+    network_id: StrictInt # tx body network_id == address header network (CIP-19)
     address_hrp: StrictStr
     stake_hrp: StrictStr
     cardano_cli_network_args: tuple[StrictStr, ...]
-    explorer_tx_url: StrictStr  # "{tx_id}" is replaced; shown after a submit
-    strike_api_keys_url: StrictStr  # Strike's API-keys page (register an API wallet)
+    explorer_tx_url: StrictStr # "{tx_id}" is replaced; shown after a submit
+    strike_api_keys_url: StrictStr # Strike's API-keys page (register an API wallet)
 
     @property
     def address_prefix(self) -> str:
@@ -71,12 +71,12 @@ class NetworkProfile(BaseModel):
 
 # Sources:
 # * Strike REST/WS hosts: Strike's public API docs (testnet and mainnet
-#   deployments); exact-host allowlist.
+# deployments); exact-host allowlist.
 # * cardano_magic / ogmios_genesis_network: the cardano-node Shelley genesis
-#   ``networkMagic`` / ``network`` of each network.
+# ``networkMagic`` / ``network`` of each network.
 # * koios_url: the koios.rest base URL of each network (public tier).
 # * network_id / address_hrp / stake_hrp: CIP-19 (header network id and bech32
-#   HRPs) and the Conway tx body ``network_id``.
+# HRPs) and the Conway tx body ``network_id``.
 # * cardano_cli_network_args: ``cardano-cli --mainnet | --testnet-magic N``.
 _PREPROD: Final = NetworkProfile(
     name="preprod",
