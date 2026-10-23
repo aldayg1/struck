@@ -209,9 +209,24 @@ def test_env_key_vars_are_ignored_even_when_set(
     assert "present" not in key_state(prov)
 
 
-def test_struck_never_reads_the_) -> None:
+def test_struck_never_reads_the_environment_for_a_key() -> None:
+    """The only os.environ reads in struck/ are the audited ones: the cardano-cli
+    allowlist (chain/cli.py), the UI Qt-library pin (ui/chart.py), the test-only
+    HOME isolation, and the provider env dicts whose ONLY use is detecting and
+    REFUSING SDK side doors (providers.py). No read ever reaches a key."""
     src = "\n".join(p.read_text(encoding="utf-8") for p in Path("struck").rglob("*.py"))
-    assert "
+    assert "os.getenv" not in src
+    for path in Path("struck").rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        if "os.environ" not in text:
+            continue
+        allowed = (
+            path == Path("struck/chain/cli.py")
+            or path == Path("struck/ui/chart.py")
+            or path.match("struck/testonly/*.py")
+            or path == Path("struck/plan/providers.py")
+        )
+        assert allowed, f"undocumented os.environ read in {path}"
 
 
 def _fake(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, object]]:

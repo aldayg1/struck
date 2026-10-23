@@ -48,10 +48,56 @@ is no silent switch and no fallback. An unknown name fails loudly.
 * Addresses must be canonical bech32 for the selected network (HRP and header
   network id), both in Python (pycardano) and in Rust (pallas).
 
+## Install
+
+Prerequisites:
+
+* [uv](https://docs.astral.sh/uv/) — manages Python 3.14 and the venv.
+* A Rust toolchain (`cargo`): the money core (`rust/struck_py`) is a PyO3
+  extension built from this repo on first sync.
+* Only the `node` chain backend needs a local stack (cardano-node socket,
+  cardano-cli, Ogmios, Kupo). The default `koios` backend needs none.
+
+```bash
+git clone https://github.com/aldayg1/struck && cd struck
+uv sync --all-extras     # or: uv sync --extra llm-openai (pick your providers)
+```
+
+`uv sync` builds the Rust core, creates `.venv`, installs everything
+exact-pinned. Then write the one required config file (gitignored, no
+template — Struck prints the exact path and refuses to start without it):
+
+```jsonc
+// <repo>/config/struck.json
+{
+  "network": "preprod",          // or "mainnet"; or omit and pass --network
+  "chain_backend": "koios",      // "koios" (keyless) or "node"
+  "node_socket": {"preprod": null, "mainnet": null},  // node IPC paths; null = node backend refuses
+  "cardano_cli_path": "/usr/local/bin/cardano-cli",   // absolute; never looked up on PATH
+  "kupo_url": "http://127.0.0.1:1442",
+  "ogmios_url": "http://127.0.0.1:1337",
+  "timeout_s": 30
+}
+```
+
+Secrets — all prompted with input hidden, at a real terminal or in the
+Settings tab; nothing is ever read from the environment:
+
+```bash
+uv run python -m struck.keys list                      # entry names, present/missing only
+uv run python -m struck.keys set llm_openai            # your LLM provider key
+uv run python -m struck.strike.venue_auth generate <label>   # new Strike API key pair, or:
+uv run python -m struck.strike.venue_auth import <label> <file.json>  # bind a pair you made on Strike's site
+uv run python -m struck.strike.venue_auth connect <label> --code <builder-code>  # builder connect
+uv run python -m struck.wallets import <name> --network <name>  # Cardano wallet (mnemonic, hidden prompt)
+```
+
+Every command takes `--network preprod|mainnet`. With no network set anywhere,
+every CLI and the UI refuse and name the three ways to set it.
+
 ## Run it
 
 ```bash
-uv sync
 uv run python -m struck.ui.app [--network <name>]          # desktop app (PySide6)
 uv run python -m struck.strike.market_cli BTC-USD           # public market data, as served
 uv run python -m struck.send_cli plans/send-2ada-preprod.json --approver <you> [--backend node|koios]
