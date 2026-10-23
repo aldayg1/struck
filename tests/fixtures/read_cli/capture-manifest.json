@@ -1,0 +1,55 @@
+{
+  "network": "preprod",
+  "captured_utc": "2026-10-22T17:02-17:05Z (seven live runs, see the golden provenance record)",
+  "operations": {
+    "markets": {
+      "url": "https://api-v2-testnet.strikefinance.org/v2/markets",
+      "status": 200,
+      "response_bytes": 7074,
+      "sha256": "c507bd6ad0ad3b64c10bb872a3dcab9c61aa5e05686b3b20a13fa9df3fd75c44",
+      "file": "markets.json"
+    },
+    "server-time": {
+      "url": "https://api-v2-testnet.strikefinance.org/v2/time",
+      "status": 200,
+      "response_bytes": 28,
+      "sha256": "ccc6b53d821a17b47a091705b4f3f50d6907b193879ad53af648a388fb3306f5",
+      "file": "server-time.json"
+    },
+    "ticker_BTC-USD": {
+      "url": "https://api-v2-testnet.strikefinance.org/price/v2/ticker/24hr?symbol=BTC-USD",
+      "status": 200,
+      "response_bytes": 351,
+      "sha256": "8823d5e0771f83005f25e2150d6b2270c4c537efb3cac1a842f9a0c464b4f351",
+      "file": "ticker_BTC-USD.json"
+    },
+    "fee-tiers": {
+      "url": "https://api-v2-testnet.strikefinance.org/v2/fee-tiers",
+      "status": 200,
+      "response_bytes": 1227,
+      "sha256": "6a93099c18726e63c355c744d5fc23d4aded4e0ce0d30d903fe3fd3206b34969",
+      "file": "fee-tiers.json"
+    },
+    "depth_BTC-USD_5": {
+      "url": "https://api-v2-testnet.strikefinance.org/price/v2/depth?symbol=BTC-USD&limit=5",
+      "status": 200,
+      "response_bytes": 186,
+      "sha256": "83a00c35da7ea097d7452fb4fe61639558a1363c0fd9d835ad8dc41b00aec4c3",
+      "file": "depth_BTC-USD_5.json"
+    },
+    "trades_BTC-USD_5": {
+      "url": "https://api-v2-testnet.strikefinance.org/price/v2/trades?symbol=BTC-USD&limit=5",
+      "status": 200,
+      "response_bytes": 563,
+      "sha256": "5835d0fac1ea5c1129eed5993ecd03befa4a27809e4d821dfaa1f23a32076a56",
+      "file": "trades_BTC-USD_5.json"
+    },
+    "klines_BTC-USD_1h_5": {
+      "url": "https://api-v2-testnet.strikefinance.org/price/v2/klines?symbol=BTC-USD&interval=1h&limit=5",
+      "status": 200,
+      "response_bytes": 621,
+      "sha256": "9c6a62af8337eec05a149c4f26c1eb4a23e7815bde150b54733159b9220c5a29",
+      "file": "klines_BTC-USD_1h_5.json"
+    }
+  }
+}

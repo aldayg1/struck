@@ -1,0 +1,23 @@
+[package]
+name = "struck_py"
+version.workspace = true
+edition.workspace = true
+description = "PyO3 binding for struck_core: str/int/JSON-str in and out only"
+
+# Packaging template: 
+# (PyO3 0.28 + maturin, cdylib) @ f04c965da.
+[lib]
+name = "struck_py"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.28", features = ["extension-module"] }
+serde = "1"
+serde_json = "1"
+struck_core = { path = "../struck_core" }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+float_arithmetic = "deny"

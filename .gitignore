@@ -1,0 +1,40 @@
+.venv/
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+rust/target/
+*.so
+
+# Local, per-machine configuration: never tracked
+config/struck.json
+data/
+
+# Root-level working copy of the brand logo; shipped asset is struck/ui/assets/brand_logo.png
+/struck.png
+
+# Not part of the shipped app: local working files only
+*.local.md
+/[A-Z]*.md
+!/README.md
+plans/coordination/
+plans/*.md
+receipts/
+logs/
+data/
+design/
+shared/repo_scan/
+debug_main.log
+.claude/
+.codex/
+.copilot/
+.cursor/
+.omc/
+.opencode/
+.zcode/
+
+# Scratch / dev-only artifacts (never source)
+reports/
+.probe_import.py
+rust/struck_py/uv.lock
+shared/

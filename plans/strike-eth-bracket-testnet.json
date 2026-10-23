@@ -1,0 +1,13 @@
+{
+  "lane": "strike",
+  "intent": "ETH-USD buy limit with take-profit and stop-loss on Strike testnet",
+  "legs": [
+    {"kind": "bracket", "symbol": "ETH-USD", "side": "buy", "type": "limit", "size": "0.010",
+     "price": "2400.00", "stop_price": null, "callback_rate": null, "activation_price": null,
+     "time_in_force": "GTC", "post_only": false, "reduce_only": false,
+     "tp": {"type": "take_profit", "stop_price": "2600.00", "price": null},
+     "sl": {"type": "stop", "stop_price": "2300.00", "price": null},
+     "leverage": 5, "client_order_id": null}
+  ],
+  "rationale": "bracket: primary + OCO TP/SL legs, server-side execution"
+}

@@ -1,0 +1,52 @@
+{
+  "label": "ETH mark inside 1000..100000 -> propose the testnet limit",
+  "condition": {
+    "kind": "composite",
+    "logic": "and",
+    "children": [
+      {
+        "kind": "price",
+        "symbol": "ETH-USD",
+        "price_type": "mark",
+        "op": "gt",
+        "threshold": "1000"
+      },
+      {
+        "kind": "not",
+        "child": {
+          "kind": "price",
+          "symbol": "ETH-USD",
+          "price_type": "mark",
+          "op": "gt",
+          "threshold": "100000"
+        }
+      }
+    ]
+  },
+  "actions": [
+    {
+      "kind": "strike_order",
+      "leg": {
+        "kind": "order",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "type": "limit",
+        "size": "0.010",
+        "price": "2400.00",
+        "stop_price": null,
+        "callback_rate": null,
+        "activation_price": null,
+        "time_in_force": "GTC",
+        "post_only": true,
+        "reduce_only": false,
+        "tp": null,
+        "sl": null,
+        "leverage": 5,
+        "client_order_id": null
+      }
+    }
+  ],
+  "rearm": false,
+  "cooldown_s": 3600,
+  "policy_id": null
+}

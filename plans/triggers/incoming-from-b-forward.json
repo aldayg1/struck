@@ -1,0 +1,29 @@
+{
+  "label": "if wallet B pays wallet A >= 1 ADA, propose forwarding the incoming amount to B",
+  "condition": {
+    "kind": "incoming_payment",
+    "address": "addr_test1qrlz9mur7jclv6aawhl5lzwrfrddw3m8qe5m3p8kxq6seacryq78sqzx95jar4ldhfvajcdjf4d7zs3h324p3wwspkks5g8jlw",
+    "from": "addr_test1vq2jvx92wc7sf842u3v9ekvjqva7756w7j0vrd62szp7qscpsfznp",
+    "min_lovelace": 1000000,
+    "token": null,
+    "policy": null,
+    "min_token_qty": null
+  },
+  "actions": [
+    {
+      "kind": "wallet_send",
+      "from_address": "addr_test1qrlz9mur7jclv6aawhl5lzwrfrddw3m8qe5m3p8kxq6seacryq78sqzx95jar4ldhfvajcdjf4d7zs3h324p3wwspkks5g8jlw",
+      "outputs": [
+        {
+          "address": "addr_test1vq2jvx92wc7sf842u3v9ekvjqva7756w7j0vrd62szp7qscpsfznp",
+          "lovelace": "incoming"
+        }
+      ],
+      "max_fee_lovelace": 400000,
+      "validity_minutes": 30
+    }
+  ],
+  "rearm": true,
+  "cooldown_s": 0,
+  "policy_id": null
+}

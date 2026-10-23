@@ -1,0 +1,20 @@
+{
+  "lane": "onchain",
+  "intent": "send 2 ADA from the USE ME CLAUDE preprod wallet to a preprod test address",
+  "legs": [
+    {
+      "kind": "send",
+      "from_address": "addr_test1qrlz9mur7jclv6aawhl5lzwrfrddw3m8qe5m3p8kxq6seacryq78sqzx95jar4ldhfvajcdjf4d7zs3h324p3wwspkks5g8jlw",
+      "outputs": [
+        {
+          "address": "addr_test1vq2jvx92wc7sf842u3v9ekvjqva7756w7j0vrd62szp7qscpsfznp",
+          "lovelace": 2000000,
+          "assets": []
+        }
+      ],
+      "max_fee_lovelace": 300000,
+      "validity_minutes": 120
+    }
+  ],
+  "rationale": "Milestone 1 end-to-end proof: plain preprod ADA send, unsigned."
+}

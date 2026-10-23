@@ -1,0 +1,28 @@
+[package]
+name = "struck_core"
+version.workspace = true
+edition.workspace = true
+description = "Struck money core: integer lovelace/asset types, exact ADA decimals, plan check, Pallas tx decode and tx-vs-plan congruence"
+
+# Pallas pins
+# (): the stock Conway decoder is the ONLY CBOR reader here.
+[dependencies]
+pallas-primitives = "=1.4.0"
+pallas-codec = "=1.4.0"
+pallas-addresses = "=1.4.0"
+pallas-traverse = "=1.4.0"
+# Same pin as the other pallas crates (already in the tree via pallas-traverse):
+# blake2b-224 key hash + ed25519 verify of the wallet's witness.
+pallas-crypto = "=1.4.0"
+# Strike decimals: strings parsed exactly; fee-tier JSON numbers (e.g. -5e-05)
+# parsed exactly via arbitrary_precision (spec §6.3), never through f64.
+rust_decimal = { version = "1.43", features = ["serde-with-str", "serde-with-arbitrary-precision"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["arbitrary_precision"] }
+hex = "0.4"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+float_arithmetic = "deny"

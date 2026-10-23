@@ -1,0 +1,11 @@
+{
+  "lane": "strike",
+  "intent": "rest a small ETH-USD buy limit below mark on Strike testnet",
+  "legs": [
+    {"kind": "order", "symbol": "ETH-USD", "side": "buy", "type": "limit", "size": "0.010",
+     "price": "2400.00", "stop_price": null, "callback_rate": null, "activation_price": null,
+     "time_in_force": "GTC", "post_only": true, "reduce_only": false, "tp": null, "sl": null,
+     "leverage": 5, "client_order_id": null}
+  ],
+  "rationale": "B2 proof shape: a testnet limit resting below mark, post-only"
+}
